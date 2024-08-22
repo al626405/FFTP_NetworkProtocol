@@ -7,7 +7,7 @@
 #include <sys/epoll.h>
 #include <mysql/mysql.h>
 
-#define PORT 12345
+#define PORT 5475
 #define BUFFER_SIZE 8192
 #define MAX_EVENTS 10
 
