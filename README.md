@@ -19,6 +19,8 @@
 
 ## Installing and setting up MariaDB on a Linux system.
 
+#### Make sure your server has port '5475' open or portforwarded.
+
 #### Update and Install mariadb, some systems use 'yum'
 ```bash
 sudo apt update
