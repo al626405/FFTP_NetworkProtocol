@@ -3,26 +3,21 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <fcntl.h>
 
-#define PORT 12345
-#define BUFFER_SIZE 8192 // Increased buffer size
+#define PORT 954
+#define BUFFER_SIZE 8192
 
 int main() {
     int sock;
     struct sockaddr_in serv_addr;
-    char *message = "Hello, Server!";
     char buffer[BUFFER_SIZE];
+    char *message;
 
     // Create socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("Socket creation error");
         return -1;
     }
-
-    // Make the socket non-blocking
-    int flags = fcntl(sock, F_GETFL, 0);
-    fcntl(sock, F_SETFL, flags | O_NONBLOCK);
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
@@ -39,16 +34,36 @@ int main() {
         return -1;
     }
 
-    // Send data to server
+    // Send username
+    message = "user";
+    send(sock, message, strlen(message), 0);
+    read(sock, buffer, sizeof(buffer));
+    printf("Server: %s", buffer);
+
+    // Send password
+    message = "password";
+    send(sock, message, strlen(message), 0);
+    read(sock, buffer, sizeof(buffer));
+    printf("Server: %s", buffer);
+
+    // Command: Upload or Download
+    message = "UPLOAD example.txt";
     send(sock, message, strlen(message), 0);
 
-    // Read response from server
-    ssize_t bytes_read = read(sock, buffer, sizeof(buffer));
-    if (bytes_read > 0) {
-        printf("Response from server: %s\n", buffer);
-    } else {
-        perror("Read failed");
+    // Upload file
+    FILE *fp = fopen("example.txt", "rb");
+    if (fp == NULL) {
+        perror("File not found");
+        close(sock);
+        return -1;
     }
+    ssize_t bytes_read;
+    while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, fp)) > 0) {
+        send(sock, buffer, bytes_read, 0);
+    }
+    fclose(fp);
+    read(sock, buffer, sizeof(buffer));
+    printf("Server: %s", buffer);
 
     // Close socket
     close(sock);
