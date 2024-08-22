@@ -1,3 +1,8 @@
+// Fast File Transfer Protocol
+// Alexis Leclerc
+// 08/22/2024
+// Server.C Script
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
