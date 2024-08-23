@@ -1,9 +1,3 @@
-// Fast File Transfer Protocol - Server Script
-// Alexis Leclerc
-// 08/22/2024
-// Server.c Script
-//Version 0.2.3
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,9 +9,11 @@
 #include <sys/mman.h>
 #include <sys/sysinfo.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <openssl/md5.h>
 
 #define PORT 5475
-#define CHUNK_SIZE 8192  // Increased chunk size for better performance
+#define CHUNK_SIZE 8192
 #define DB_HOST "localhost"
 #define DB_USER "username"
 #define DB_PASS "password"
@@ -38,7 +34,7 @@ void *client_thread(void *arg) {
     int valread;
 
     int flags = fcntl(client_sock, F_GETFL, 0);
-    fcntl(client_sock, F_SETFL, flags | O_NONBLOCK);  // Non-blocking mode
+    fcntl(client_sock, F_SETFL, flags | O_NONBLOCK);
 
     while (1) {
         valread = read(client_sock, buffer, CHUNK_SIZE);
@@ -48,12 +44,19 @@ void *client_thread(void *arg) {
                 break;
             }
             printf("Received: %s\n", buffer);
+
+            // Calculate checksum for data integrity
+            unsigned char md5[MD5_DIGEST_LENGTH];
+            MD5(buffer, strlen(buffer), md5);
+
+            // Send data with checksum
             send(client_sock, buffer, strlen(buffer), 0);
+            send(client_sock, md5, MD5_DIGEST_LENGTH, 0);
         }
     }
 
     close(client_sock);
-    free(arg);  // Free the dynamically allocated memory
+    free(arg);
     pthread_exit(NULL);
 }
 
@@ -64,7 +67,8 @@ int authenticate_user(char *username, char *password) {
 
     conn = mysql_init(NULL);
     if (!mysql_real_connect(conn, DB_HOST, DB_USER, DB_PASS, DB_NAME, 0, NULL, 0)) {
-        fprintf(stderr, "%s\n", mysql_error(conn));
+        fprintf(stderr, "Database connection failed: %s\n", mysql_error(conn));
+        mysql_close(conn);
         return 0;
     }
 
@@ -72,7 +76,7 @@ int authenticate_user(char *username, char *password) {
     snprintf(query, sizeof(query), "SELECT * FROM users WHERE username='%s' AND password=MD5('%s')", username, password);
 
     if (mysql_query(conn, query)) {
-        fprintf(stderr, "%s\n", mysql_error(conn));
+        fprintf(stderr, "Database query failed: %s\n", mysql_error(conn));
         mysql_close(conn);
         return 0;
     }
@@ -118,7 +122,7 @@ int main() {
     printf("Server is listening on port %d\n", PORT);
 
     // Determine number of threads
-    num_threads = get_nprocs() - 1;  // Use number of processors minus 1
+    num_threads = get_nprocs() - 1;
     threads = malloc(num_threads * sizeof(pthread_t));
 
     while ((client_sock = accept(sock, (struct sockaddr *)&address, (socklen_t*)&addrlen)) >= 0) {
