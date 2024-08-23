@@ -5,17 +5,50 @@
 ## Client.c and Server.c scripts (Fast File Transfer Protocol)
 
 **The purpose of this protocol is to perform fast optimized efficent manipulation of larger than normal datasets.**
-* The makefile will create a MariaDB SQL database named "file_transfer", with 1 table called "users" with 3 columns: 'id', 'username', 'password'.
+* The makefile will create a MariaDB SQL database named "file_transfer", with 1 table called "users" with 3 columns: **'id'**, **'username'**, **'password'**.
 
 ### Connecting and Usage
 
 **The Fast File Transfer Protocol will run by default on port *5475*.**
 
- For Windows systems it is recomended to use ncat through nmap. [Official nmap Downloads Webpage](https://nmap.org/download#windows)
-* To connect with nmap: ncat *domain* 5475
+**For Windows systems it is recomended to use ncat through nmap. [Official nmap Downloads Webpage](https://nmap.org/download#windows).**
 
- For Unix systems it is recomended to connect through the Bash Terminal
-* To connect with bash terminal: nc *domain* 5475
+To connect with nmap:
+```bash
+ncat host.com 5475
+```
+
+**For Unix systems it is recomended to connect through the Bash Terminal**
+
+To connect with bash terminal:
+```bash
+nc host.com 5475
+```
+
+### Uploading & Downloading Files
+
+**Uploading a File:**
+
+To upload a file named localfile.txt, you can enter:
+```bash
+UPLOAD remote_filename.txt
+```
+
+Then, use Ctrl+D (or EOF) to send the file contents:
+```bash
+cat localfile.txt | host.com 5475
+```
+**Downloading a File:**
+
+To download a file named remote_filename.txt from the server:
+```bash
+DOWNLOAD remote_filename.txt
+```
+
+The server should start sending the file contents, which you can redirect to a local file:
+```bash
+nc host.com 12345 > downloaded_file.txt
+```
 
 ## Installing and setting up MariaDB on a Linux system.
 
