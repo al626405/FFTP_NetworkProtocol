@@ -1,3 +1,9 @@
+// Fast File Transfer Protocol - Client Script
+// Alexis Leclerc
+// 08/22/2024
+// Server.c Script
+//Version 0.2.4
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
