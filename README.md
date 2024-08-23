@@ -82,7 +82,7 @@ exit
 
 **Print the working directory.**
 ```bash
-*pwd
+pwd
 ```
 
 **Concatenate and display file content.**
