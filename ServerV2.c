@@ -2,6 +2,7 @@
 // Alexis Leclerc
 // 08/22/2024
 // Server.C Script
+//Version 0.1.9
 
 #include <stdio.h>
 #include <stdlib.h>
