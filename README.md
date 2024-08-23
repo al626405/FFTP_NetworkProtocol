@@ -3,7 +3,7 @@
 ### 08/22/2024
 ### Contact
 * [Email](mailto:alexisglleclerc@gmail.com)
-* [LinkedIn](mailto:https://www.linkedin.com/in/alexis-gl-leclerc/)
+* [LinkedIn](https://www.linkedin.com/in/alexis-gl-leclerc/)
 
 ## Client.c and Server.c scripts (Fast File Transfer Protocol)
 
