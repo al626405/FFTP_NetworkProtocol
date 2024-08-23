@@ -30,11 +30,11 @@ int main() {
         return -1;
     }
 
-    if (
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
+if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+    printf("\nConnection Failed \n");
+    return -1;
+}
+
 
     // Login to the server
     char username[50], password[50];

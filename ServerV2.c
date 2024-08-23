@@ -1,7 +1,7 @@
 // Fast File Transfer Protocol
 // Alexis Leclerc
 // 08/22/2024
-// Client.C Script
+// Server.C Script
 
 #include <stdio.h>
 #include <stdlib.h>
