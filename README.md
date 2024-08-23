@@ -1,6 +1,6 @@
 # Fast File Transfer Protocol Version 0.2.4
 ### Alexis Leclerc 
-### 08/22/2024
+### 08/22/2024 - Most recent update
 ### Contact
 * [Email](mailto:alexisglleclerc@gmail.com)
 * [LinkedIn](https://www.linkedin.com/in/alexis-gl-leclerc/)
