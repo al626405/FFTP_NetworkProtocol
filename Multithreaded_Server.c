@@ -2,7 +2,7 @@
 // Alexis Leclerc
 // 08/22/2024
 // Server.C Script
-//Version 0.2.0
+//Version 0.2.3
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,19 +17,25 @@
 
 #define PORT 5475
 #define CHUNK_SIZE 8192  // Increased chunk size for better performance
-#define DB_HOST "users"
+#define DB_HOST "localhost"
 #define DB_USER "root"
 #define DB_PASS "AL@12345"
 #define DB_NAME "file_transfer"
 
-int sock, client_sock;
+int sock;
 pthread_t *threads;
 int num_threads;
 
+typedef struct {
+    int client_sock;
+} thread_args_t;
+
 void *client_thread(void *arg) {
-    int client_sock = *(int*)arg;
+    thread_args_t *args = (thread_args_t *)arg;
+    int client_sock = args->client_sock;
     char buffer[CHUNK_SIZE];
     int valread;
+
     int flags = fcntl(client_sock, F_GETFL, 0);
     fcntl(client_sock, F_SETFL, flags | O_NONBLOCK);  // Non-blocking mode
 
@@ -46,6 +52,7 @@ void *client_thread(void *arg) {
     }
 
     close(client_sock);
+    free(arg);  // Free the dynamically allocated memory
     pthread_exit(NULL);
 }
 
@@ -109,34 +116,30 @@ int main() {
 
     printf("Server is listening on port %d\n", PORT);
 
+    // Determine number of threads
+    num_threads = get_nprocs() - 1;  // Use number of processors minus 1
+    threads = malloc(num_threads * sizeof(pthread_t));
+
     while ((client_sock = accept(sock, (struct sockaddr *)&address, (socklen_t*)&addrlen)) >= 0) {
         // Authenticate user
-        char username[50], password[50];
         read(client_sock, buffer, CHUNK_SIZE);
+        char username[50], password[50];
         sscanf(buffer, "%s %s", username, password);
 
         if (authenticate_user(username, password)) {
             send(client_sock, "AUTH_SUCCESS", strlen("AUTH_SUCCESS"), 0);
             printf("User %s authenticated.\n", username);
+
+            // Prepare thread arguments
+            thread_args_t *args = malloc(sizeof(thread_args_t));
+            args->client_sock = client_sock;
+
+            // Start a thread for each connection
+            pthread_create(&threads[num_threads++ % num_threads], NULL, client_thread, args);
         } else {
             send(client_sock, "AUTH_FAILED", strlen("AUTH_FAILED"), 0);
             close(client_sock);
-            continue;
         }
-
-        // Determine number of threads
-        num_threads = get_nprocs() - 1;  // Use number of processors minus 1
-        threads = malloc(num_threads * sizeof(pthread_t));
-
-        for (int i = 0; i < num_threads; i++) {
-            pthread_create(&threads[i], NULL, client_thread, &client_sock);
-        }
-
-        for (int i = 0; i < num_threads; i++) {
-            pthread_join(threads[i], NULL);
-        }
-
-        free(threads);
     }
 
     if (client_sock < 0) {
@@ -144,6 +147,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+    free(threads);
     close(sock);
     return 0;
 }

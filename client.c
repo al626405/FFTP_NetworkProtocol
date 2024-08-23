@@ -1,17 +1,19 @@
-// Fast File Transfer Protocol
+// Fast File Transfer Protocol - Client
 // Alexis Leclerc
 // 08/22/2024
-// Client.C Script
-//Version 0.1.9
+// Server.C Script
+//Version 0.2.0
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
+#include <sys/mman.h>
 
 #define PORT 5475
-#define CHUNK_SIZE 1024
+#define CHUNK_SIZE 8192  // Increased chunk size for better performance
 
 int main() {
     int sock = 0;
@@ -31,11 +33,10 @@ int main() {
         return -1;
     }
 
-if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-    printf("\nConnection Failed \n");
-    return -1;
-}
-
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
 
     // Login to the server
     char username[50], password[50];

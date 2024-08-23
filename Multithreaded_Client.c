@@ -1,8 +1,8 @@
-// Fast File Transfer Protocol
+// Fast File Transfer Protocol - Client Script
 // Alexis Leclerc
 // 08/22/2024
 // Server.C Script
-//Version 0.1.9
+//Version 0.2.3
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,19 +10,16 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <pthread.h>
-#include <sys/sysinfo.h>
 
 #define PORT 5475
-#define CHUNK_SIZE 1024
+#define CHUNK_SIZE 8192  // Increased chunk size for better performance
 
 int sock;
 pthread_t *threads;
 int num_threads;
 
-void *client_thread(void *arg) {
+void *send_commands(void *arg) {
     char buffer[CHUNK_SIZE];
-    int valread;
-
     while (1) {
         printf("Enter command: ");
         fgets(buffer, CHUNK_SIZE, stdin);
@@ -34,13 +31,13 @@ void *client_thread(void *arg) {
 
         send(sock, buffer, strlen(buffer), 0);
 
-        // If the command is `exit`, close the connection and terminate threads
+        // If the command is `exit`, close the connection
         if (strcmp(buffer, "exit") == 0) {
             break;
         }
 
         // Receive the response from the server
-        valread = read(sock, buffer, CHUNK_SIZE - 1);
+        int valread = read(sock, buffer, CHUNK_SIZE - 1);
         buffer[valread] = '\0';
         printf("%s\n", buffer);
     }
@@ -53,7 +50,6 @@ int main() {
     struct sockaddr_in serv_addr;
     char buffer[CHUNK_SIZE] = {0};
 
-    // Create socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
         return -1;
@@ -98,9 +94,9 @@ int main() {
     num_threads = get_nprocs() - 1;  // Use number of processors minus 1
     threads = malloc(num_threads * sizeof(pthread_t));
 
-    // Create threads
+    // Create threads to send commands
     for (int i = 0; i < num_threads; i++) {
-        pthread_create(&threads[i], NULL, client_thread, NULL);
+        pthread_create(&threads[i], NULL, send_commands, NULL);
     }
 
     // Wait for all threads to finish
