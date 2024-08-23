@@ -1,6 +1,9 @@
 # Fast File Transfer Protocol Version 0.2.4
 ### Alexis Leclerc 
 ### 08/22/2024
+### Contact
+* [Email](mailto:alexisglleclerc@gmail.com)
+* [LinkedIn](mailto:https://www.linkedin.com/in/alexis-gl-leclerc/)
 
 ## Client.c and Server.c scripts (Fast File Transfer Protocol)
 
