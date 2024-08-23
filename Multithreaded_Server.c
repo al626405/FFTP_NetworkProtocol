@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/sysinfo.h>
+#include <sys/socket.h>
 
 #define PORT 5475
 #define CHUNK_SIZE 8192  // Increased chunk size for better performance

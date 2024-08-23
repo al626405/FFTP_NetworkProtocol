@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "mysql.h": "c"
+        "mysql.h": "c",
+        "mman.h": "c",
+        "sysinfo.h": "c",
+        "fcntl.h": "c"
     }
 }
