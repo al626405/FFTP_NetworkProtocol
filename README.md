@@ -7,6 +7,20 @@
 **The purpose of this protocol is to perform fast optimized efficent manipulation of larger than normal datasets.**
 * The makefile will create a MariaDB SQL database named "file_transfer", with 1 table called "users" with 3 columns: **'id'**, **'username'**, **'password'**.
 
+# Running Client.c & Server.c
+```bash
+gcc -o Client Client.c -lpthread
+./Client
+```
+### If any errors occur try:
+**Client.c:**
+```bash
+chmod 755 Client.c
+```
+**Server.c**
+```bash
+chmod 755 Server.c
+```
 # Connecting and Usage
 
 ### The Fast File Transfer Protocol will run by default on port *5475*.
@@ -51,6 +65,54 @@ The server should start sending the file contents, which you can redirect to a l
 nc host.com 12345 > downloaded_file.txt
 ```
 
+## System commands
+
+**List directory contents.**
+```bash
+ls -l
+```
+
+****
+```bash
+exit
+```
+
+**Print the working directory.**
+```bash
+*pwd
+```
+
+**Concatenate and display file content.**
+```bash
+cat filename.txt
+```
+
+**Report file system disk space usage.**
+```bash
+df -h
+```
+
+
+**Display Linux tasks.**
+```bash
+top -n 1
+```
+
+**Resource/Task Monitor.**
+```bash
+htop
+```
+
+**Search text using patterns.**
+```bash
+grep 'pattern' filename.txt
+```
+
+**Display a line of text..**
+```bash
+echo "Hello, world!"
+```
+
 ## Installing and setting up MariaDB on a Linux system.
 
 #### Make sure your server has port '5475' open or portforwarded.
@@ -58,7 +120,7 @@ nc host.com 12345 > downloaded_file.txt
 **Update and Install mariadb, some systems use 'yum'**
 ```bash
 sudo apt update
-sudo apt install mariadb-server mariadb-client libmariadb-dev
+sudo apt install mariadb-server mariadb-Client libmariadb-dev
 ```
 
 **Start MariaDB**
