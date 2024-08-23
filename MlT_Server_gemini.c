@@ -15,8 +15,8 @@
 #define PORT 5475
 #define CHUNK_SIZE 8192
 #define DB_HOST "localhost"
-#define DB_USER "username"
-#define DB_PASS "password"
+#define DB_USER "root"
+#define DB_PASS "AL@12345"
 #define DB_NAME "file_transfer"
 
 int sock;
