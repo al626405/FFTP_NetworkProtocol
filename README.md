@@ -1,4 +1,4 @@
-# Fast File Transfer Protocol Version 0.1.9
+# Fast File Transfer Protocol Version 0.2.4
 ### Alexis Leclerc 
 ### 08/22/2024
 
