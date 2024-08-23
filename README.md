@@ -7,25 +7,26 @@
 **The purpose of this protocol is to perform fast optimized efficent manipulation of larger than normal datasets.**
 * The makefile will create a MariaDB SQL database named "file_transfer", with 1 table called "users" with 3 columns: **'id'**, **'username'**, **'password'**.
 
-### Connecting and Usage
+# Connecting and Usage
 
-**The Fast File Transfer Protocol will run by default on port *5475*.**
+### The Fast File Transfer Protocol will run by default on port *5475*.
 
-**For Windows systems it is recomended to use ncat through nmap. [Official nmap Downloads Webpage](https://nmap.org/download#windows).**
+## For Windows systems it is recomended to use ncat through nmap. 
+**[Official nmap Downloads Webpage](https://nmap.org/download#windows).**
 
-To connect with nmap:
+**To connect with nmap:**
 ```bash
 ncat host.com 5475
 ```
 
-**For Unix systems it is recomended to connect through the Bash Terminal**
+## For Unix systems it is recomended to connect through the Bash Terminal.
 
-To connect with bash terminal:
+**To connect with bash terminal:**
 ```bash
 nc host.com 5475
 ```
 
-### Uploading & Downloading Files
+## Uploading & Downloading Files
 
 **Uploading a File:**
 
