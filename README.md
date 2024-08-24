@@ -1,156 +1,42 @@
-# Fast File Transfer Protocol Version 0.2.4
-### Alexis Leclerc 
-### 08/22/2024 - Most recent update
-### Contact
-* [Email](mailto:alexisglleclerc@gmail.com)
-* [LinkedIn](https://www.linkedin.com/in/alexis-gl-leclerc/)
+# Fast File Transfer Protocol (FFTP)
+**Alexis Leclerc**
+**08/24/2024**
 
-## Client.c and Server.c scripts (Fast File Transfer Protocol)
+## Overview
 
-**The purpose of this protocol is to perform fast optimized efficent manipulation of larger than normal datasets.**
-* Running both sql files will create a MariaDB SQL database named "file_transfer", with 1 table called "users" with 3 columns: **'id'**, **'username'**, **'password'**.
+Fast File Transfer Protocol (FFTP) is a secure, efficient, and feature-rich protocol designed to handle large data and file transfers over the network. Built to compete with established protocols like SFTP, FTP, and SSH, FFTP provides robust security through SSL/TLS encryption, system-level authentication, remote command execution, and concurrent file transfers. This protocol is ideal for system administrators, developers, and anyone needing secure and fast file transfers.
 
-# Running Client.c & Server.c
+## Features
+
+- **Secure Communication**: Utilizes SSL/TLS for end-to-end encryption, ensuring that all data transferred between the client and server is secure.
+- **System-Level Authentication**: Authenticates users against the system's user database and shadow passwords, offering strong security similar to SSH.
+- **Remote Command Execution**: After authentication, users can execute bash commands remotely, and the server will send back the command output.
+- **File Transfer**: Supports secure file transfers with basic functionality for sending and receiving files.
+- **Concurrency**: Capable of handling multiple client connections simultaneously via multi-threading, ensuring efficient processing of multiple requests.
+- **Logging**: Logs all user activities, including command executions and file transfers, for audit and security purposes.
+- **Cross-Platform Compatibility**: Designed to work on POSIX-compliant operating systems (Linux, Unix-based systems).
+
+## Architecture
+
+The FFTP consists of two main components:
+
+1. **FFTP Server**: Handles client connections, authentication, command execution, and file transfers. It listens on a specified port and manages multiple client connections concurrently.
+2. **FFTP Client**: Connects to the FFTP server, authenticates the user, and sends commands or requests for file transfers.
+
+## Installation
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed on your system:
+
+- **OpenSSL**: Required for SSL/TLS encryption.
+- **GCC** or any other C compiler.
+- **POSIX-compliant OS**: Linux/Unix-based system.
+
+### Compilation
+
+To compile the server and client programs, use the following commands:
+
 ```bash
-gcc -o Client Client.c -lpthread
-./Client
-```
-### If any errors occur try:
-**Client.c:**
-```bash
-chmod 755 Client.c
-```
-**Server.c**
-```bash
-chmod 755 Server.c
-```
-# Connecting and Usage
-
-### The Fast File Transfer Protocol will run by default on port *5475*.
-
-## For Windows systems it is recomended to use ncat through nmap. 
-**[Official nmap Downloads Webpage](https://nmap.org/download#windows).**
-
-**To connect with nmap:**
-```bash
-ncat host.com 5475
-```
-
-## For Unix systems it is recomended to connect through the Bash Terminal.
-
-**To connect with bash terminal:**
-```bash
-nc host.com 5475
-```
-
-## Uploading & Downloading Files
-
-**Uploading a File:**
-
-To upload a file named localfile.txt, you can enter:
-```bash
-UPLOAD remote_filename.txt
-```
-
-Then, use Ctrl+D (or EOF) to send the file contents:
-```bash
-cat localfile.txt | host.com 5475
-```
-**Downloading a File:**
-
-To download a file named remote_filename.txt from the server:
-```bash
-DOWNLOAD remote_filename.txt
-```
-
-The server should start sending the file contents, which you can redirect to a local file:
-```bash
-nc host.com 12345 > downloaded_file.txt
-```
-
-## System commands
-
-**List directory contents.**
-```bash
-ls -l
-```
-
-****
-```bash
-exit
-```
-
-**Print the working directory.**
-```bash
-pwd
-```
-
-**Concatenate and display file content.**
-```bash
-cat filename.txt
-```
-
-**Report file system disk space usage.**
-```bash
-df -h
-```
-
-
-**Display Linux tasks.**
-```bash
-top -n 1
-```
-
-**Resource/Task Monitor.**
-```bash
-htop
-```
-
-**Search text using patterns.**
-```bash
-grep 'pattern' filename.txt
-```
-
-**Display a line of text..**
-```bash
-echo "Hello, world!"
-```
-
-## Installing and setting up MariaDB on a Linux system.
-
-#### Make sure your server has port '5475' open or portforwarded.
-
-**Update and Install mariadb, some systems use 'yum'**
-```bash
-sudo apt update
-sudo apt install mariadb-server mariadb-Client libmariadb-dev
-```
-
-**Start MariaDB**
-```bash
-sudo systemctl start mariadb
-sudo systemctl enable mariadb
-```
-
-**Adding new usernames:**
-```bash
-mysql -u user -p
-```
-
-**Copy + Paste this into the terminal. Modify the username and password.**
-```sql
--- Add a test user (passwords should be hashed in practice)
-INSERT INTO users (username, password) VALUES ('testuser', 'testpassword');
-```
-
-**SQL Code to create the database and table**
-```sql
-CREATE DATABASE file_transfer;
-
-USE file_transfer;
-
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
-);
+gcc -o fftp_server server.c -lssl -lcrypto -lpthread
+gcc -o fftp_client client.c -lssl -lcrypto -lpthread
