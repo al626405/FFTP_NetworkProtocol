@@ -119,9 +119,9 @@ void handle_file_upload(SSL *ssl, char *command) {
     receive_file(ssl, file_path);
 }
 
-void handle_file_transfer(SSL *ssl, char *command) {
+void handle_file_download(SSL *ssl, char *command) {
     char file_path[256];
-    sscanf(command, "send_file %s", file_path);
+    sscanf(command, "get_file %s", file_path);
 
     FILE *file = fopen(file_path, "rb");
     if (file == NULL) {
@@ -134,8 +134,9 @@ void handle_file_transfer(SSL *ssl, char *command) {
     while ((bytes_read = fread(buffer, 1, CHUNK_SIZE, file)) > 0) {
         SSL_write(ssl, buffer, bytes_read);
     }
+
     fclose(file);
-    SSL_write(ssl, "FILE_TRANSFER_COMPLETE", strlen("FILE_TRANSFER_COMPLETE"));
+    printf("File sent: %s\n", file_path);
 }
 
 void *client_handler(void *arg) {
@@ -173,9 +174,10 @@ void *client_handler(void *arg) {
                     break;
                 }
 
-                // Handle file transfer or upload
                 if (strncmp(buffer, "send_file", 9) == 0) {
                     handle_file_upload(ssl, buffer);
+                } else if (strncmp(buffer, "get_file", 8) == 0) {
+                    handle_file_download(ssl, buffer);
                 } else {
                     // Execute other commands
                     FILE *fp;
