@@ -55,9 +55,14 @@ gcc -o fftp_client client.c -lssl -lcrypto -lpthread
 ./fftp_client
 ```
 
-**To request a file transfer from the server, use the following command after successful authentication:**
+**To download a file from the server, use the following command after successful authentication:**
 ```bash
-send_file /path/to/file.txt
+send_file /path/to/remote/file.txt
+```
+
+**To upload a file to the server, use the following command after successful authentication:**
+```bash
+get_file /path/to/remote/file.txt
 ```
 
 **After successful authentication, you can execute any bash command remotely. For example:**
@@ -69,3 +74,8 @@ ls -l /home/user
 ```bash
 exit
 ```
+
+
+### Summary
+
+The scripts now fully support file upload (`send_file`) and file download (`get_file`) functionalities, along with command execution and logging. The `README.md` has been updated to reflect these new commands and provide clear instructions for usage.
