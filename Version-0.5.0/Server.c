@@ -24,7 +24,7 @@
 #define DB_USER "username"
 #define DB_PASS "password"
 #define DB_NAME "file_transfer"
-#define MAX_CONNECTIONS 10
+#define MAX_CONNECTIONS 1
 
 SSL_CTX *ctx;
 
