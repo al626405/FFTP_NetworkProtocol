@@ -3,6 +3,7 @@
 
 **08/24/2024**
 
+**Version 1.0.0**
 ## Overview
 
 **Fast File Transfer Protocol (FFTP) is a secure, efficient, and feature-rich protocol designed to handle large data and file transfers over the network. Built to compete with established protocols like SFTP, FTP, and SSH, FFTP provides robust security through SSL/TLS encryption, system-level authentication, remote command execution, and concurrent file transfers. This protocol is ideal for system administrators, developers, and anyone needing secure and fast file transfers.**
