@@ -8,7 +8,7 @@
 ## Client.c and Server.c scripts (Fast File Transfer Protocol)
 
 **The purpose of this protocol is to perform fast optimized efficent manipulation of larger than normal datasets.**
-* The makefile will create a MariaDB SQL database named "file_transfer", with 1 table called "users" with 3 columns: **'id'**, **'username'**, **'password'**.
+* Running both sql files will create a MariaDB SQL database named "file_transfer", with 1 table called "users" with 3 columns: **'id'**, **'username'**, **'password'**.
 
 # Running Client.c & Server.c
 ```bash
