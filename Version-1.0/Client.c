@@ -68,6 +68,30 @@ void send_file(SSL *ssl, const char *file_path) {
     printf("File sent: %s\n", file_path);
 }
 
+void get_file(SSL *ssl, const char *file_path) {
+    // Notify server to send the file
+    char command[256];
+    snprintf(command, sizeof(command), "get_file %s", file_path);
+    SSL_write(ssl, command, strlen(command));
+
+    // Open file to write received data
+    FILE *file = fopen(file_path, "wb");
+    if (!file) {
+        printf("Failed to open file for writing: %s\n", file_path);
+        return;
+    }
+
+    // Receive file data in chunks
+    char buffer[CHUNK_SIZE];
+    int bytes_read;
+    while ((bytes_read = SSL_read(ssl, buffer, CHUNK_SIZE)) > 0) {
+        fwrite(buffer, 1, bytes_read, file);
+    }
+
+    fclose(file);
+    printf("File downloaded: %s\n", file_path);
+}
+
 void *send_commands(void *arg) {
     SSL *ssl = (SSL *)arg;
     char buffer[CHUNK_SIZE];
@@ -80,11 +104,14 @@ void *send_commands(void *arg) {
             continue;
         }
 
-        // Handle file upload command
         if (strncmp(buffer, "send_file", 9) == 0) {
             char file_path[256];
             sscanf(buffer, "send_file %s", file_path);
             send_file(ssl, file_path);
+        } else if (strncmp(buffer, "get_file", 8) == 0) {
+            char file_path[256];
+            sscanf(buffer, "get_file %s", file_path);
+            get_file(ssl, file_path);
         } else {
             SSL_write(ssl, buffer, strlen(buffer));  // Send the command to the server
         }
