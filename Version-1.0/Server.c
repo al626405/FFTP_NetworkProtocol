@@ -2,7 +2,7 @@
 // Alexis Leclerc
 // 08/23/2024
 // Server.c Script
-//Version 1.0.0
+// Version 1.0.0
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,6 +96,29 @@ void log_activity(const char *message) {
     fclose(logfile);
 }
 
+void receive_file(SSL *ssl, const char *file_path) {
+    FILE *file = fopen(file_path, "wb");
+    if (!file) {
+        perror("Failed to open file for writing");
+        return;
+    }
+
+    char buffer[CHUNK_SIZE];
+    int bytes_read;
+    while ((bytes_read = SSL_read(ssl, buffer, CHUNK_SIZE)) > 0) {
+        fwrite(buffer, 1, bytes_read, file);
+    }
+
+    fclose(file);
+    printf("File received: %s\n", file_path);
+}
+
+void handle_file_upload(SSL *ssl, char *command) {
+    char file_path[256];
+    sscanf(command, "send_file %s", file_path);
+    receive_file(ssl, file_path);
+}
+
 void handle_file_transfer(SSL *ssl, char *command) {
     char file_path[256];
     sscanf(command, "send_file %s", file_path);
@@ -150,11 +173,11 @@ void *client_handler(void *arg) {
                     break;
                 }
 
-                // Handle file transfer
+                // Handle file transfer or upload
                 if (strncmp(buffer, "send_file", 9) == 0) {
-                    handle_file_transfer(ssl, buffer);
+                    handle_file_upload(ssl, buffer);
                 } else {
-                    // Execute the command
+                    // Execute other commands
                     FILE *fp;
                     char command_output[CHUNK_SIZE] = {0};
 
