@@ -2,7 +2,7 @@
 // Alexis Leclerc
 // 08/23/2024
 // Client.c Script
-//Version 1.0.0
+// Version 1.0.0
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,6 +45,29 @@ void cleanup_openssl() {
     EVP_cleanup();
 }
 
+void send_file(SSL *ssl, const char *file_path) {
+    FILE *file = fopen(file_path, "rb");
+    if (!file) {
+        printf("File not found: %s\n", file_path);
+        return;
+    }
+
+    // Notify server that a file is being sent
+    char command[256];
+    snprintf(command, sizeof(command), "send_file %s", file_path);
+    SSL_write(ssl, command, strlen(command));
+
+    // Read file and send in chunks
+    char buffer[CHUNK_SIZE];
+    int bytes_read;
+    while ((bytes_read = fread(buffer, 1, CHUNK_SIZE, file)) > 0) {
+        SSL_write(ssl, buffer, bytes_read);
+    }
+
+    fclose(file);
+    printf("File sent: %s\n", file_path);
+}
+
 void *send_commands(void *arg) {
     SSL *ssl = (SSL *)arg;
     char buffer[CHUNK_SIZE];
@@ -57,7 +80,14 @@ void *send_commands(void *arg) {
             continue;
         }
 
-        SSL_write(ssl, buffer, strlen(buffer));  // Send the command to the server
+        // Handle file upload command
+        if (strncmp(buffer, "send_file", 9) == 0) {
+            char file_path[256];
+            sscanf(buffer, "send_file %s", file_path);
+            send_file(ssl, file_path);
+        } else {
+            SSL_write(ssl, buffer, strlen(buffer));  // Send the command to the server
+        }
 
         if (strcmp(buffer, "exit") == 0) {
             break;
