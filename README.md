@@ -5,7 +5,7 @@
 
 ## Overview
 
-Fast File Transfer Protocol (FFTP) is a secure, efficient, and feature-rich protocol designed to handle large data and file transfers over the network. Built to compete with established protocols like SFTP, FTP, and SSH, FFTP provides robust security through SSL/TLS encryption, system-level authentication, remote command execution, and concurrent file transfers. This protocol is ideal for system administrators, developers, and anyone needing secure and fast file transfers.
+**Fast File Transfer Protocol (FFTP) is a secure, efficient, and feature-rich protocol designed to handle large data and file transfers over the network. Built to compete with established protocols like SFTP, FTP, and SSH, FFTP provides robust security through SSL/TLS encryption, system-level authentication, remote command execution, and concurrent file transfers. This protocol is ideal for system administrators, developers, and anyone needing secure and fast file transfers.**
 
 ## Features
 
@@ -19,7 +19,7 @@ Fast File Transfer Protocol (FFTP) is a secure, efficient, and feature-rich prot
 
 ## Architecture
 
-The FFTP consists of two main components:
+**The FFTP consists of two main components:**
 
 1. **FFTP Server**: Handles client connections, authentication, command execution, and file transfers. It listens on a specified port and manages multiple client connections concurrently.
 2. **FFTP Client**: Connects to the FFTP server, authenticates the user, and sends commands or requests for file transfers.
@@ -28,7 +28,7 @@ The FFTP consists of two main components:
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed on your system:
+**Before you begin, ensure you have the following installed on your system:**
 
 - **OpenSSL**: Required for SSL/TLS encryption.
 - **GCC** or any other C compiler.
@@ -36,8 +36,36 @@ Before you begin, ensure you have the following installed on your system:
 
 ### Compilation
 
-To compile the server and client programs, use the following commands:
+**To compile the server and client programs, use the following commands:**
 
 ```bash
 gcc -o fftp_server server.c -lssl -lcrypto -lpthread
 gcc -o fftp_client client.c -lssl -lcrypto -lpthread
+```
+
+## Usage
+
+**To start the FFTP server, run:**
+```bash
+./fftp_server
+```
+
+**To connect to the FFTP server, run the client program:**
+```bash
+./fftp_client
+```
+
+**To request a file transfer from the server, use the following command after successful authentication:**
+```bash
+send_file /path/to/file.txt
+```
+
+**After successful authentication, you can execute any bash command remotely. For example:**
+```bash
+ls -l /home/user
+```
+
+**To exit the session, simply type:**
+```bash
+exit
+```
