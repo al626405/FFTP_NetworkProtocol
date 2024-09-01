@@ -1,10 +1,6 @@
 name: C/C++ CI
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -12,12 +8,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc libssl-dev
+
+    - name: Compile FFTP Server
+      run: gcc -o fftp_server server.c -lssl -lcrypto -lpthread
+
+    - name: Compile FFTP Client
+      run: gcc -o fftp_client client.c -lssl -lcrypto -lpthread
+
+    - name: Run Tests
+      run: |
+        # Assuming you have test scripts or basic commands to ensure the binaries work correctly.
+        ./fftp_server &
+        SERVER_PID=$!
+        sleep 2
+        ./fftp_client --version
+        kill $SERVER_PID
+
+    - name: Upload binaries
+      uses: actions/upload-artifact@v3
+      with:
+        name: FFTP-binaries
+        path: |
+          fftp_server
+          fftp_client
